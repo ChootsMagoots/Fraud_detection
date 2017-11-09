@@ -21,24 +21,31 @@ def dummify_countries(df):
     return df2
 
 
+def add_targets(df):
+    df2 = df.copy()
+    df2['target1'] = df2['acct_type'].isin(['premium'])
+    df2['target2'] = df2['acct_type'].isin(
+        ['fraudster_event', 'fraudster', 'fraudster_att'])
+    return df2
+
+
 if __name__ == '__main__':
     df = pd.read_json('data/data.json')
     # df.to_csv('data/data.csv')
 
+    df = dummify_countries(df)
+    df = add_targets(df)
+
     features = ['channels', 'country_US', 'country_English', 'country_other', 'body_length', 'fb_published',
                 'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type']
 
-    df = dummify_countries(df)
-
-    targets = ['acct_type']
+    targets = ['target1', 'target2']
     X = select_cols(df, features)
     y = select_cols(df, targets)
 
     Xtrain, Xtest, ytrain, ytest = train_test_split(X, y)
 
-    Xtrain.to_csv('Xtrain.csv')
-    ytrain.to_csv('ytrain.csv')
-    Xtest.to_csv('Xtest.csv')
-    ytest.to_csv('ytest.csv')
-
-    #
+    Xtrain.to_csv('data/Xtrain.csv')
+    ytrain.to_csv('data/ytrain.csv')
+    Xtest.to_csv('data/Xtest.csv')
+    ytest.to_csv('data/ytest.csv')
