@@ -39,13 +39,13 @@ if __name__ == '__main__':
     features = ['channels', 'country_US', 'country_English', 'country_other', 'body_length', 'fb_published',
                 'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type']
 
-    targets = ['acct_type']
+    targets = ['target1', 'target2']
     X = select_cols(df, features)
     y = select_cols(df, targets)
 
     Xtrain, Xtest, ytrain, ytest = train_test_split(X, y)
 
-    Xtrain.to_csv('Xtrain.csv')
-    ytrain.to_csv('ytrain.csv')
-    Xtest.to_csv('Xtest.csv')
-    ytest.to_csv('ytest.csv')
+    Xtrain.to_csv('data/Xtrain.csv')
+    ytrain.to_csv('data/ytrain.csv')
+    Xtest.to_csv('data/Xtest.csv')
+    ytest.to_csv('data/ytest.csv')
