@@ -74,9 +74,9 @@ if __name__ == '__main__':
 	i = 0
 	for j, entry in enumerate(predictions): 
 		if entry == 1: 
+			predictions[j] = 0
 			continue
-		if predictions2[i] == 0:
+		if predictions2[i] == 1:
 			predictions[j] = 1
 		i += 1
-
 
