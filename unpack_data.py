@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+import pickle
 
 if __name__ == '__main__':
 	df = pd.read_json('data/data.json')
@@ -15,7 +16,7 @@ if __name__ == '__main__':
 
 	X_train, X_test, y_train, y_test = train_test_split(small_df, premiums, test_size = 0.20)
 
-	model = RandomForestClassifier(n_estimators = 2000, n_jobs = -1)
+	model = RandomForestClassifier(n_estimators = 10000, n_jobs = -1)
 	model.fit(small_df, premiums)
 
 	predictions = model.predict(small_df)
@@ -46,37 +47,61 @@ if __name__ == '__main__':
 
 	X2_train, X2_test, fraud_train, fraud_test = train_test_split(second_df, fraud, test_size = 0.20)
 
-	second_model = RandomForestClassifier(n_estimators = 2000, n_jobs = -1, oob_score = True)
+	second_model = RandomForestClassifier(n_estimators = 10000, n_jobs = -1, oob_score = True)
 	second_model.fit(X2_train, fraud_train)
 
-	predictions2 = second_model.predict(X2_test)
+	predictions2 = second_model.predict(second_df)
 
-	y_test_array = np.array(fraud_test)
-	TP, TN, FP, FN = 0, 0, 0, 0
-	for thing1, thing2 in zip(predictions2, y_test_array):
-		if thing2 == 1 and thing1 - thing2 == 0:
-			TP += 1
-		elif thing2 == 0 and thing1 - thing2 == 0:
-			TN += 1
-		elif thing2 == 0 and thing1 - thing2 == 1:
-			FP += 1
-		else: 
-			FN += 1
+	# y_test_array = np.array(fraud_test)
+	# TP, TN, FP, FN = 0, 0, 0, 0
+	# for thing1, thing2 in zip(predictions2, y_test_array):
+	# 	if thing2 == 1 and thing1 - thing2 == 0:
+	# 		TP += 1
+	# 	elif thing2 == 0 and thing1 - thing2 == 0:
+	# 		TN += 1
+	# 	elif thing2 == 0 and thing1 - thing2 == 1:
+	# 		FP += 1
+	# 	else: 
+	# 		FN += 1
 
-	print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
+	# print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
 
-	sensitivity = TP / (TP + FN)
-	precision = TP / (TP + FP)
-	accuracy = (TP + TN) / (TP + TN + FP + FN)
+	# sensitivity = TP / (TP + FN)
+	# precision = TP / (TP + FP)
+	# accuracy = (TP + TN) / (TP + TN + FP + FN)
 
-	print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
+	# print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
 
-	i = 0
-	for j, entry in enumerate(predictions): 
-		if entry == 1: 
-			predictions[j] = 0
-			continue
-		if predictions2[i] == 1:
-			predictions[j] = 1
-		i += 1
+	# i = 0
+	# for j, entry in enumerate(predictions): 
+	# 	if entry == 1: 
+	# 		predictions[j] = 0
+	# 		continue
+	# 	if predictions2[i] == 1:
+	# 		predictions[j] = 1
+	# 	i += 1
+
+	# y_test_array = np.array(fraud)
+	# TP, TN, FP, FN = 0, 0, 0, 0
+	# for thing1, thing2 in zip(predictions, y_test_array):
+	# 	if thing2 == 1 and thing1 - thing2 == 0:
+	# 		TP += 1
+	# 	elif thing2 == 0 and thing1 - thing2 == 0:
+	# 		TN += 1
+	# 	elif thing2 == 0 and thing1 - thing2 == 1:
+	# 		FP += 1
+	# 	else: 
+	# 		FN += 1
+
+	# print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
+
+	# sensitivity = TP / (TP + FN)
+	# precision = TP / (TP + FP)
+	# accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+	# print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
+	with open('model1.pkl', 'wb') as f:
+		pickle.dump(model, f)
+	with open('model2.pkl', 'wb') as f:
+		pickle.dump(second_model, f)
 
