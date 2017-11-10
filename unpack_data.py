@@ -5,9 +5,38 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 import pickle
 
+def validation_metrics(predictions, targets):
+	y_test_array = np.array(targets)
+	TP, TN, FP, FN = 0, 0, 0, 0
+	for thing1, thing2 in zip(predictions, y_test_array):
+		if thing2 == 1 and thing1 - thing2 == 0:
+			TP += 1
+		elif thing2 == 0 and thing1 - thing2 == 0:
+			TN += 1
+		elif thing2 == 0 and thing1 - thing2 == 1:
+			FP += 1
+		else:
+			FN += 1
+
+	print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
+
+	sensitivity = TP / (TP + FN)
+	precision = TP / (TP + FP)
+	accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+	print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
+
+
 if __name__ == '__main__':
 	df = pd.read_json('data/data.json')
-	small_df = df.drop(['acct_type', 'approx_payout_date', 'channels', 'description', 'event_created', 'event_end', 'event_published', 'event_start', 'gts', 'has_analytics', 'listed', 'name', 'num_payouts', 'object_id', 'org_desc', 'org_name', 'payee_name', 'venue_address', 'venue_latitude', 'venue_longitude', 'venue_name', 'country', 'currency', 'email_domain', 'payout_type', 'previous_payouts', 'ticket_types', 'venue_country', 'venue_state', 'delivery_method', 'has_header', 'org_facebook', 'org_twitter', 'sale_duration'], axis = 1)
+	small_df = df.drop(['acct_type', 'approx_payout_date', 'channels',
+	 					'description', 'event_created', 'event_end',
+						'event_published', 'event_start', 'gts', 'has_analytics',
+						'listed', 'name', 'num_payouts', 'object_id', 'org_desc', 'org_name',
+						'payee_name', 'venue_address', 'venue_latitude', 'venue_longitude',
+						'venue_name', 'country', 'currency', 'email_domain', 'payout_type',
+						'previous_payouts', 'ticket_types', 'venue_country', 'venue_state',
+						'delivery_method', 'has_header', 'org_facebook', 'org_twitter', 'sale_duration'], axis = 1)
 	target = df['acct_type']
 	target = pd.get_dummies(target)
 	premiums = target.pop('premium')
@@ -21,25 +50,7 @@ if __name__ == '__main__':
 
 	predictions = model.predict(small_df)
 
-	# y_test_array = np.array(premiums)
-	# TP, TN, FP, FN = 0, 0, 0, 0
-	# for thing1, thing2 in zip(predictions, y_test_array):
-	# 	if thing2 == 1 and thing1 - thing2 == 0:
-	# 		TP += 1
-	# 	elif thing2 == 0 and thing1 - thing2 == 0:
-	# 		TN += 1
-	# 	elif thing2 == 0 and thing1 - thing2 == 1:
-	# 		FP += 1
-	# 	else: 
-	# 		FN += 1
-
-	# print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
-
-	# sensitivity = TP / (TP + FN)
-	# precision = TP / (TP + FP)
-	# accuracy = (TP + TN) / (TP + TN + FP + FN)
-
-	# print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
+	validation_metrics(predictions, premiums)
 
 	mask = premiums == predictions
 	second_df = small_df[predictions != mask]
@@ -52,29 +63,11 @@ if __name__ == '__main__':
 
 	predictions2 = second_model.predict(second_df)
 
-	# y_test_array = np.array(fraud_test)
-	# TP, TN, FP, FN = 0, 0, 0, 0
-	# for thing1, thing2 in zip(predictions2, y_test_array):
-	# 	if thing2 == 1 and thing1 - thing2 == 0:
-	# 		TP += 1
-	# 	elif thing2 == 0 and thing1 - thing2 == 0:
-	# 		TN += 1
-	# 	elif thing2 == 0 and thing1 - thing2 == 1:
-	# 		FP += 1
-	# 	else: 
-	# 		FN += 1
-
-	# print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
-
-	# sensitivity = TP / (TP + FN)
-	# precision = TP / (TP + FP)
-	# accuracy = (TP + TN) / (TP + TN + FP + FN)
-
-	# print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
+	validation_metrics(predictions2, fraud_test)
 
 	# i = 0
-	# for j, entry in enumerate(predictions): 
-	# 	if entry == 1: 
+	# for j, entry in enumerate(predictions):
+	# 	if entry == 1:
 	# 		predictions[j] = 0
 	# 		continue
 	# 	if predictions2[i] == 1:
@@ -90,7 +83,7 @@ if __name__ == '__main__':
 	# 		TN += 1
 	# 	elif thing2 == 0 and thing1 - thing2 == 1:
 	# 		FP += 1
-	# 	else: 
+	# 	else:
 	# 		FN += 1
 
 	# print('TP = ', TP, ' TN = ', TN, ' FP = ', FP, ' FN = ', FN)
@@ -104,4 +97,3 @@ if __name__ == '__main__':
 		pickle.dump(model, f)
 	with open('model2.pkl', 'wb') as f:
 		pickle.dump(second_model, f)
-
