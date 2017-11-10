@@ -17,11 +17,11 @@ df = dummify_countries(df)
 df = add_targets(df)
 df = add_num_previous_payouts(df)
 
-features = ['channels', 'country_US', 'country_English', 'country_other', 'body_length', 'fb_published',
-            'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type', 'num_prev_payouts']
+features = ['channels', 'country_US', 'country_English', 'country_other', 'body_length', 'fb_published', 'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type', 'num_prev_payouts']
 
 X = select_cols(df, features)
 y = select_cols(df, 'target2')
 
 #Here's the prediction for that row:
-predictions = simplemodel.predict(X)
+predictions = simplemodel.predict_proba(X)
+print(predictions[0][-1])
