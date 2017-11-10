@@ -21,6 +21,12 @@ def dummify_countries(df):
     return df2
 
 
+def add_num_previous_payouts(df):
+    df2 = df.copy()
+    df2['num_prev_payouts'] = df2['previous_payouts'].apply(lambda x: len(x))
+    return df2
+
+
 def add_targets(df):
     df2 = df.copy()
     df2['target1'] = df2['acct_type'].isin(['premium'])
@@ -35,9 +41,10 @@ if __name__ == '__main__':
 
     df = dummify_countries(df)
     df = add_targets(df)
+    df = add_num_previous_payouts(df)
 
     features = ['channels', 'country_US', 'country_English', 'country_other', 'body_length', 'fb_published',
-                'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type']
+                'has_logo', 'name_length', 'num_order', 'sale_duration2', 'show_map', 'user_age', 'user_type', 'num_prev_payouts']
 
     targets = ['target1', 'target2']
     X = select_cols(df, features)
