@@ -28,7 +28,7 @@ def validation_metrics(predictions, targets):
 
 
 if __name__ == '__main__':
-	df = pd.read_json('data/data.json')
+	"""df = pd.read_json('data/data.json')
 	small_df = df.drop(['acct_type', 'approx_payout_date', 'channels',
 	 					'description', 'event_created', 'event_end',
 						'event_published', 'event_start', 'gts', 'has_analytics',
@@ -37,13 +37,24 @@ if __name__ == '__main__':
 						'venue_name', 'country', 'currency', 'email_domain', 'payout_type',
 						'previous_payouts', 'ticket_types', 'venue_country', 'venue_state',
 						'delivery_method', 'has_header', 'org_facebook', 'org_twitter', 'sale_duration'], axis = 1)
+
 	target = df['acct_type']
 	target = pd.get_dummies(target)
 	#premiums = target.pop('premium')
 	fraud = target[['fraudster', 'fraudster_att', 'fraudster_event']]
-	fraud = fraud.sum(axis = 1)
+	fraud = fraud.sum(axis = 1)"""
 
-	X_train, X_test, y_train, y_test = train_test_split(small_df, fraud, test_size = 0.20)
+	#X_train, X_test, y_train, y_test = train_test_split(small_df, fraud, test_size = 0.20)
+
+    X_train_t = pd.read_csv('data/Xtrain.csv')
+    y_train_t = pd.read_csv('data/ytrain.csv')
+    X_train = X_train_t.drop('Unnamed: 0', axis = 1)
+    y_train = y_train_t.drop(['Unnamed: 0', 'target1'], axis = 1)
+
+    X_test_t = pd.read_csv('data/Xtest.csv')
+    y_test_t = pd.read_csv('data/ytest.csv')
+    X_test = X_test_t.drop('Unnamed: 0', axis = 1)
+    y_test = y_test_t.drop(['Unnamed: 0', 'target1'], axis = 1)
 
 	model = RandomForestClassifier(n_estimators = 1000, n_jobs = -1)
 	model.fit(X_train, y_train)
