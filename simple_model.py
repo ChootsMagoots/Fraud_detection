@@ -84,5 +84,5 @@ if __name__ == '__main__':
 	# accuracy = (TP + TN) / (TP + TN + FP + FN)
 
 	# print('sensitivity: {}, precision: {}, accuracy: {}'.format(sensitivity, precision, accuracy))
-	with open('model1.pkl', 'wb') as f:
+	with open('simplemodel.pkl', 'wb') as f:
 		pickle.dump(model, f)
