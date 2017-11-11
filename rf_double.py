@@ -41,11 +41,7 @@ def read_in_data(filepath, X_train, X_test, y_train, y_test):
 
 	return X_train, X_test, y_train, y_test
 
-
-if __name__ == '__main__':
-	filepath = "data/"
-	X_train, X_test, y_train, y_test = read_in_data(filepath, 'Xtrain.csv',
-	 												'Xtest.csv', 'ytrain.csv', 'ytest.csv')
+def train_models(X_train, X_test, y_train, y_test):
 	model = RandomForestClassifier(n_estimators = 500, n_jobs = -1)
 	model.fit(X_train, y_train['target1'])
 
@@ -62,6 +58,16 @@ if __name__ == '__main__':
 
 	second_model = RandomForestClassifier(n_estimators = 500, n_jobs = -1, oob_score = True)
 	second_model.fit(X_train_2, y_train_2)
+
+	return model, second_model, predictions_mod1_test, X_test_2, y_test_2
+
+if __name__ == '__main__':
+	filepath = "data/"
+	X_train, X_test, y_train, y_test = read_in_data(filepath, 'Xtrain.csv',
+	 												'Xtest.csv', 'ytrain.csv', 'ytest.csv')
+
+	results = train_models(X_train, X_test, y_train , y_test)
+	model, second_model, predictions_mod1_test, X_test_2, y_test_2 = results
 
 	predictions2 = second_model.predict(X_test_2)
 
